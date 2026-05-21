@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { generateSmileWithReplicate } from "@/lib/replicate-smile";
-import { parseReplicateSeedFromEnv } from "@/lib/replicate-seed";
 import { validatePatientIntake } from "@/lib/patient-intake";
 import { forwardPatientIntakeToWebhook } from "@/lib/patient-webhook";
 import { isTreatmentId, TREATMENT_PROMPTS } from "@/lib/treatment-prompts";
@@ -57,8 +56,6 @@ export async function POST(request: Request) {
     const body = (await request.json()) as {
       imageBase64?: string;
       treatmentId?: string;
-      /** When true, apply `REPLICATE_SEED` from the server if it parses to a valid integer. */
-      useConsistentSeed?: unknown;
       patient?: unknown;
     };
 
@@ -108,15 +105,10 @@ export async function POST(request: Request) {
 
     const prompt = TREATMENT_PROMPTS[body.treatmentId];
 
-    const useConsistentSeed = body.useConsistentSeed === true;
-    const parsedSeed = parseReplicateSeedFromEnv();
-    const seed = useConsistentSeed && parsedSeed !== undefined ? parsedSeed : undefined;
-
     const resultUrl = await generateSmileWithReplicate({
       imageBuffer: buffer,
       mimeType,
       prompt,
-      ...(seed !== undefined ? { seed } : {}),
     });
 
     void forwardPatientIntakeToWebhook({

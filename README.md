@@ -27,8 +27,6 @@ A modern Next.js (App Router) app for **dental-style AI smile previews**: captur
 
    If you switch models, confirm its OpenAPI input schema matches or adjust `lib/replicate-smile.ts`.
 
-5. **Seeds:** Optional on the model: `seed` — set `REPLICATE_SEED` in `.env.local` (integer string) and turn on **Use Consistent Results** in the UI to send it; leave the toggle off for random variation each run. Parsing is safe: invalid or missing seeds are ignored without crashing (see `lib/replicate-seed.ts`).
-
 ## Run locally
 
 With [pnpm](https://pnpm.io/installation):
@@ -61,7 +59,6 @@ Open [http://localhost:3000](http://localhost:3000).
 - `components/ErrorMessage.tsx` — Inline errors (camera, API, env)
 - `lib/patient-intake.ts` — Patient object type + validation
 - `lib/patient-webhook.ts` — Optional demo webhook (`PATIENT_INTAKE_WEBHOOK_URL`)
-- `lib/replicate-seed.ts` — Parse optional `REPLICATE_SEED` for reproducible runs
 - `lib/replicate-smile.ts` — Replicate file upload + `replicate.run`
 - `lib/treatment-prompts.ts` — Treatment IDs and exact prompts
 

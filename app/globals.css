@@ -50,3 +50,13 @@ body {
 .font-display {
   font-family: var(--font-display), ui-serif, Georgia, "Times New Roman", serif;
 }
+
+@keyframes hourglass-wiggle {
+  0%,
+  100% {
+    transform: rotate(-12deg);
+  }
+  50% {
+    transform: rotate(12deg);
+  }
+}

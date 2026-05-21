@@ -13,11 +13,9 @@ import { TreatmentSelector } from "@/components/TreatmentSelector";
 import { WizardHero } from "@/components/WizardHero";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import type { PatientIntake } from "@/lib/patient-intake";
 import { validatePatientIntake } from "@/lib/patient-intake";
-import type { TreatmentId } from "@/lib/treatment-prompts";
+import { TREATMENT_LABELS, type TreatmentId } from "@/lib/treatment-prompts";
 
 const emptyPatient: PatientIntake = {
   fullName: "",
@@ -33,8 +31,6 @@ export default function Home() {
   const [enhancedUrl, setEnhancedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [useConsistentSeed, setUseConsistentSeed] = useState(false);
-
   const goToTreatment = useCallback(() => {
     const check = validatePatientIntake(patient);
     if (!check.ok) {
@@ -87,7 +83,6 @@ export default function Home() {
           patient,
           imageBase64: captured,
           treatmentId,
-          useConsistentSeed,
         }),
       });
       const data = (await res.json()) as {
@@ -115,7 +110,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [captured, patient, treatmentId, useConsistentSeed]);
+  }, [captured, patient, treatmentId]);
 
   return (
     <div className="flex flex-1 flex-col">
@@ -217,77 +212,56 @@ export default function Home() {
         )}
 
         {procedureStep === 4 && captured && (
-          <section className="space-y-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <section className="space-y-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="space-y-1">
                 <h2 className="text-lg font-medium tracking-tight text-[var(--foreground)]">
-                  Your preview
+                  Your photo is ready
                 </h2>
                 <p className="text-sm text-[var(--foreground-muted)]">
-                  Adjust treatment if you like, then generate your AI preview.
+                  Treatment:{" "}
+                  <span className="text-emerald-400/90">{TREATMENT_LABELS[treatmentId]}</span>
+                  {" · "}
+                  <button
+                    type="button"
+                    className="text-emerald-500/80 underline-offset-2 hover:text-emerald-400 hover:underline"
+                    onClick={() => setProcedureStep(2)}
+                    disabled={loading}
+                  >
+                    Change
+                  </button>
                 </p>
                 <p className="text-xs text-[var(--foreground-muted)]">
                   <span className="text-emerald-500/80">Demo intake: </span>
                   {patient.fullName} · {patient.email} · {patient.phone}
                 </p>
               </div>
-              <Button type="button" variant="secondary" onClick={retakePhoto}>
+              <Button type="button" variant="secondary" onClick={retakePhoto} disabled={loading}>
                 Retake photo
               </Button>
             </div>
 
-            <SmilePreview originalSrc={captured} enhancedSrc={enhancedUrl} />
-
-            <Card className="border-emerald-500/12">
-              <CardContent className="space-y-6 pt-6">
-                <TreatmentSelector
-                  value={treatmentId}
-                  onChange={setTreatmentId}
-                  disabled={loading}
-                />
-
-                <div className="flex flex-col gap-3 rounded-2xl border border-[var(--border-subtle)] bg-black/25 p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="space-y-1.5 pr-4">
-                    <Label htmlFor="consistent-seed" className="text-base font-medium text-[var(--foreground)]">
-                      Use Consistent Results
-                    </Label>
-                    <p
-                      id="consistent-seed-desc"
-                      className="text-xs leading-relaxed text-[var(--foreground-muted)]"
-                    >
-                      When on, the server sends your configured{" "}
-                      <code className="rounded-md border border-[var(--border-subtle)] bg-white/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-emerald-200/90">
-                        REPLICATE_SEED
-                      </code>{" "}
-                      for repeatable previews. When off, each run varies. Model or host updates can
-                      still shift results over time.
-                    </p>
-                  </div>
-                  <Switch
-                    id="consistent-seed"
-                    className="shrink-0"
-                    checked={useConsistentSeed}
-                    onCheckedChange={setUseConsistentSeed}
-                    disabled={loading}
-                    aria-describedby="consistent-seed-desc"
-                  />
-                </div>
-
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full sm:w-auto"
-                  onClick={() => void generate()}
-                  disabled={loading}
-                >
-                  <Sparkles className="size-4" aria-hidden />
-                  Generate AI preview
-                </Button>
-              </CardContent>
-            </Card>
-
-            <LoadingState active={loading} />
             <ErrorMessage message={error} />
+
+            <SmilePreview
+              originalSrc={captured}
+              enhancedSrc={enhancedUrl}
+              belowOriginal={
+                <div className="space-y-3">
+                  <Button
+                    type="button"
+                    size="lg"
+                    className="w-full"
+                    onClick={() => void generate()}
+                    disabled={loading}
+                  >
+                    <Sparkles className="size-4" aria-hidden />
+                    Generate AI preview
+                  </Button>
+                  <LoadingState active={loading} />
+                </div>
+              }
+            />
           </section>
         )}
 
