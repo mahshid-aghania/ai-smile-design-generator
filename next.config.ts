@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         hostname: "replicate.delivery",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "smiledentalartscentre.com",
+        pathname: "/wp-content/uploads/**",
+      },
     ],
   },
 };

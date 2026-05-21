@@ -1,6 +1,9 @@
 # AI Smile Design Generator
 
-A modern Next.js (App Router) app for **dental-style AI smile previews**: capture a selfie in the browser, choose a treatment direction, and call **Replicate** to generate an edited image with your configured model.
+A modern Next.js (App Router) app with two experiences:
+
+1. **Clinic site clone** (`/`) — Smile Dental Arts Centre homepage (hero, services, appointment form, testimonials, map) on branch `clone/smile-dental-arts-centre`
+2. **AI smile preview** (`/smile-preview`) — capture a selfie, choose a treatment direction, and call **Replicate** to generate an edited preview image
 
 ## Prerequisites
 
@@ -43,11 +46,15 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) for the clinic homepage, or [http://localhost:3000/smile-preview](http://localhost:3000/smile-preview) for the AI wizard.
 
 ## Project structure
 
-- `app/page.tsx` — Wizard flow: patient intake → treatment → camera → preview + generate
+- `app/(clinic)/page.tsx` — Clinic homepage clone (Smile Dental Arts Centre)
+- `app/(clinic)/layout.tsx` — Clinic header, footer, CDCP banner
+- `components/clinic/` — Hero carousel, sections, appointment form, testimonials
+- `lib/clinic/content.ts` — Site copy, nav, and service data
+- `app/smile-preview/page.tsx` — Wizard flow: patient intake → treatment → camera → preview + generate
 - `app/api/generate-smile/route.ts` — Validates patient + image; runs Replicate; optional intake webhook
 - `components/PatientInfoForm.tsx` — Name, email, phone fields
 - `components/ProcedureSteps.tsx` — Step 1–4 indicator (Your Info → Treatment → Photo → Preview)

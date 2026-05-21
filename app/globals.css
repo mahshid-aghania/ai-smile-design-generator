@@ -1,9 +1,41 @@
 @import "tailwindcss";
+@import "./clinic-theme.css";
 
 /**
- * Dentin Family Dentistry — minimal dark UI, emerald accent.
- * Surfaces stay slightly above true black for a calm, clinical-luxe feel.
+ * AI Smile Preview wizard — minimal dark UI, emerald accent.
  */
+.theme-wizard {
+  --background: #070a09;
+  --surface: #0e1311;
+  --surface-elevated: #141c19;
+  --foreground: #ecfdf5;
+  --foreground-muted: #94a3b8;
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-active: #047857;
+  --primary-glow: rgba(16, 185, 129, 0.22);
+  --ring: #34d399;
+  --border: rgba(16, 185, 129, 0.14);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
+}
+
+.theme-wizard body,
+.theme-wizard {
+  background-color: var(--background);
+  background-image: radial-gradient(
+    120% 80% at 50% -10%,
+    var(--primary-glow),
+    transparent 55%
+  );
+  color: var(--foreground);
+}
+
+.theme-wizard ::selection {
+  background-color: rgba(16, 185, 129, 0.35);
+  color: var(--foreground);
+}
+
 :root {
   --background: #070a09;
   --surface: #0e1311;
@@ -27,24 +59,12 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   min-height: 100dvh;
-  background-color: var(--background);
-  background-image: radial-gradient(
-    120% 80% at 50% -10%,
-    var(--primary-glow),
-    transparent 55%
-  );
-  color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-}
-
-::selection {
-  background-color: rgba(16, 185, 129, 0.35);
-  color: var(--foreground);
 }
 
 .font-display {

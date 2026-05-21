@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,10 +18,16 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600"],
 });
 
+const cormorant = Cormorant_Garamond({
+  variable: "--font-clinic-display",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata: Metadata = {
-  title: "Dentin Family Dentistry · AI Smile Preview",
+  title: "Dentist in Markham | Invisalign, Implants & Family Dentistry",
   description:
-    "Dentin Family Dentistry — visualize smile enhancements with AI. Capture a photo, choose a style, and preview a concept to discuss with your dentist.",
+    "Looking for a dentist in Markham? Smile Dental Arts Centre offers Invisalign, dental implants, root canals, whitening & family dentistry. Book today.",
 };
 
 export default function RootLayout({
@@ -32,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${playfair.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
         {children}

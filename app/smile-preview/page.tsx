@@ -122,7 +122,7 @@ export default function Home() {
             </div>
             <div>
               <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-emerald-400/90">
-                Dentin Family Dentistry
+                Smile Dental Arts Centre
               </p>
               <p className="text-sm font-semibold tracking-tight text-[var(--foreground)]">
                 AI Smile Preview
@@ -271,7 +271,7 @@ export default function Home() {
             treatment plan. Please consult a licensed dentist for clinical recommendations.
           </p>
           <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.2em] text-emerald-600/70">
-            Dentin Family Dentistry
+            Smile Dental Arts Centre
           </p>
         </footer>
       </main>

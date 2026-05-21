@@ -1,0 +1,50 @@
+.theme-clinic {
+  --clinic-gold: #d4a24c;
+  --clinic-gold-hover: #c4923f;
+  --clinic-navy: #1e3a5f;
+  --clinic-text: #2d3748;
+  --clinic-muted: #64748b;
+  --clinic-bg: #ffffff;
+  --clinic-surface: #f8fafc;
+  --clinic-border: #e2e8f0;
+  color-scheme: light;
+}
+
+.theme-clinic body,
+.theme-clinic {
+  background: var(--clinic-bg);
+  color: var(--clinic-text);
+  background-image: none;
+}
+
+.theme-clinic ::selection {
+  background-color: rgba(212, 162, 76, 0.35);
+  color: var(--clinic-navy);
+}
+
+.theme-clinic .clinic-btn-primary {
+  background: var(--clinic-gold);
+  color: #fff;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.theme-clinic .clinic-btn-primary:hover {
+  background: var(--clinic-gold-hover);
+}
+
+.theme-clinic .clinic-heading {
+  color: var(--clinic-navy);
+  font-family: var(--font-clinic-display), ui-serif, Georgia, serif;
+}
+
+.theme-clinic .clinic-link {
+  color: var(--clinic-gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.theme-clinic .clinic-link:hover {
+  color: var(--clinic-gold-hover);
+}
