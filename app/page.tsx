@@ -5,6 +5,7 @@ import { ArrowLeft, Camera, Sparkles } from "lucide-react";
 
 import { CameraCapture } from "@/components/CameraCapture";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { FullArchShowcase } from "@/components/FullArchShowcase";
 import { LoadingState } from "@/components/LoadingState";
 import { PatientInfoForm } from "@/components/PatientInfoForm";
 import { ProcedureSteps, type ProcedureStepId } from "@/components/ProcedureSteps";
@@ -133,6 +134,8 @@ export default function Home() {
       </header>
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-10 px-4 py-10 sm:px-6 sm:py-12">
+        <FullArchShowcase />
+
         <div className="space-y-10">
           <WizardHero
             eyebrow="AI Smile Generator"
