@@ -1,14 +1,22 @@
 @import "tailwindcss";
 
+/**
+ * Dentin Family Dentistry — minimal dark UI, emerald accent.
+ * Surfaces stay slightly above true black for a calm, clinical-luxe feel.
+ */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --foreground-muted: #475569;
-  --primary: #0d9488;
-  --primary-hover: #0f766e;
-  --primary-active: #115e59;
-  --ring: #14b8a6;
-  --border: #e2e8f0;
+  --background: #070a09;
+  --surface: #0e1311;
+  --surface-elevated: #141c19;
+  --foreground: #ecfdf5;
+  --foreground-muted: #94a3b8;
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-active: #047857;
+  --primary-glow: rgba(16, 185, 129, 0.22);
+  --ring: #34d399;
+  --border: rgba(16, 185, 129, 0.14);
+  --border-subtle: rgba(255, 255, 255, 0.06);
 }
 
 @theme inline {
@@ -18,8 +26,27 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
-  background: var(--background);
+  min-height: 100dvh;
+  background-color: var(--background);
+  background-image: radial-gradient(
+    120% 80% at 50% -10%,
+    var(--primary-glow),
+    transparent 55%
+  );
   color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background-color: rgba(16, 185, 129, 0.35);
+  color: var(--foreground);
+}
+
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, "Times New Roman", serif;
 }

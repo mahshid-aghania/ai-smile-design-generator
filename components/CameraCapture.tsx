@@ -95,9 +95,9 @@ export function CameraCapture({ onCapture, onError, onCancel }: CameraCapturePro
   }, [onCapture, onError, ready, stopStream]);
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden border-emerald-500/12">
       <CardContent className="space-y-4 p-4 sm:p-6">
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-900">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-zinc-950 ring-1 ring-inset ring-emerald-500/10">
           <video
             ref={videoRef}
             playsInline
@@ -106,7 +106,7 @@ export function CameraCapture({ onCapture, onError, onCancel }: CameraCapturePro
             className="h-full w-full object-cover"
           />
           {!ready && (
-            <div className="absolute inset-0 flex items-center justify-center bg-slate-900/80 text-sm text-white">
+            <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/90 text-sm text-[var(--foreground-muted)] backdrop-blur-[2px]">
               Starting camera…
             </div>
           )}

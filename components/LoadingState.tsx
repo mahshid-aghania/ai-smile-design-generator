@@ -12,9 +12,9 @@ export function LoadingState({ active }: LoadingStateProps) {
   if (!active) return null;
 
   return (
-    <Card className="border-[var(--primary)]/25 bg-teal-50/60">
+    <Card className="border-emerald-500/25 bg-emerald-500/[0.06] shadow-[0_0_32px_-12px_rgba(16,185,129,0.25)]">
       <CardContent className="flex items-center gap-3 py-4">
-        <Loader2 className="size-5 shrink-0 animate-spin text-[var(--primary)]" aria-hidden />
+        <Loader2 className="size-5 shrink-0 animate-spin text-emerald-400" aria-hidden />
         <p className="text-sm font-medium text-[var(--foreground)]">
           Generating your AI smile preview...
         </p>

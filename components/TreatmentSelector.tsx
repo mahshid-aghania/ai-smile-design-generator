@@ -14,7 +14,7 @@ type TreatmentSelectorProps = {
 export function TreatmentSelector({ value, onChange, disabled }: TreatmentSelectorProps) {
   return (
     <div className="space-y-3">
-      <Label className="text-base">Treatment option</Label>
+      <Label className="text-base font-medium text-[var(--foreground)]">Treatment option</Label>
       <RadioGroup
         value={value}
         onValueChange={(v) => onChange(v as TreatmentId)}
@@ -24,13 +24,11 @@ export function TreatmentSelector({ value, onChange, disabled }: TreatmentSelect
         {TREATMENT_IDS.map((id) => (
           <label
             key={id}
-            className="flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border)] bg-white p-3 shadow-sm transition hover:border-[var(--primary)]/40 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-60"
+            className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-subtle)] bg-black/20 p-3.5 transition-all duration-200 hover:border-emerald-500/30 hover:bg-white/[0.04] has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-45"
           >
             <RadioGroupItem value={id} id={id} className="mt-1" />
             <div className="space-y-0.5">
-              <span className="text-sm font-medium text-[var(--foreground)]">
-                {TREATMENT_LABELS[id]}
-              </span>
+              <span className="text-sm font-medium text-[var(--foreground)]">{TREATMENT_LABELS[id]}</span>
             </div>
           </label>
         ))}

@@ -1,51 +1,77 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Camera, Sparkles } from "lucide-react";
+import { ArrowLeft, Camera, Sparkles } from "lucide-react";
 
 import { CameraCapture } from "@/components/CameraCapture";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { LoadingState } from "@/components/LoadingState";
+import { PatientInfoForm } from "@/components/PatientInfoForm";
+import { ProcedureSteps, type ProcedureStepId } from "@/components/ProcedureSteps";
 import { SmilePreview } from "@/components/SmilePreview";
 import { TreatmentSelector } from "@/components/TreatmentSelector";
+import { WizardHero } from "@/components/WizardHero";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import type { PatientIntake } from "@/lib/patient-intake";
+import { validatePatientIntake } from "@/lib/patient-intake";
 import type { TreatmentId } from "@/lib/treatment-prompts";
 
+const emptyPatient: PatientIntake = {
+  fullName: "",
+  email: "",
+  phone: "",
+};
+
 export default function Home() {
-  const [cameraOpen, setCameraOpen] = useState(false);
+  const [procedureStep, setProcedureStep] = useState<ProcedureStepId>(1);
   const [captured, setCaptured] = useState<string | null>(null);
+  const [patient, setPatient] = useState<PatientIntake>(emptyPatient);
   const [treatmentId, setTreatmentId] = useState<TreatmentId>("natural_smile_enhancement");
   const [enhancedUrl, setEnhancedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [useConsistentSeed, setUseConsistentSeed] = useState(false);
 
-  const openCamera = useCallback(() => {
+  const goToTreatment = useCallback(() => {
+    const check = validatePatientIntake(patient);
+    if (!check.ok) {
+      setError(check.message);
+      return;
+    }
     setError(null);
-    setEnhancedUrl(null);
-    setCameraOpen(true);
+    setProcedureStep(2);
+  }, [patient]);
+
+  const goToPhoto = useCallback(() => {
+    setError(null);
+    setProcedureStep(3);
   }, []);
 
   const handleCapture = useCallback((dataUrl: string) => {
     setCaptured(dataUrl);
-    setCameraOpen(false);
+    setProcedureStep(4);
     setEnhancedUrl(null);
     setError(null);
   }, []);
 
   const handleCameraError = useCallback((message: string) => {
     setError(message);
-    setCameraOpen(false);
+    setProcedureStep(2);
   }, []);
 
-  const retake = useCallback(() => {
+  const retakePhoto = useCallback(() => {
     setCaptured(null);
     setEnhancedUrl(null);
     setError(null);
-    setCameraOpen(true);
+    setProcedureStep(3);
+  }, []);
+
+  const backToInfo = useCallback(() => {
+    setError(null);
+    setProcedureStep(1);
   }, []);
 
   const generate = useCallback(async () => {
@@ -58,6 +84,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          patient,
           imageBase64: captured,
           treatmentId,
           useConsistentSeed,
@@ -88,88 +115,130 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [captured, treatmentId, useConsistentSeed]);
+  }, [captured, patient, treatmentId, useConsistentSeed]);
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b border-[var(--border)] bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <div className="flex items-center gap-2">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-teal-600 text-white shadow-sm">
-              <Sparkles className="size-4" aria-hidden />
+      <header className="border-b border-[var(--border-subtle)] bg-[var(--surface)]/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-5 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="relative flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-700 text-emerald-950 shadow-[0_0_24px_-6px_rgba(16,185,129,0.65)]">
+              <Sparkles className="size-[18px]" aria-hidden strokeWidth={2.25} />
             </div>
             <div>
-              <p className="text-sm font-semibold tracking-tight text-[var(--foreground)]">
-                AI Smile Design Generator
+              <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-emerald-400/90">
+                Dentin Family Dentistry
               </p>
-              <p className="text-xs text-[var(--foreground-muted)]">Dental visualization studio</p>
+              <p className="text-sm font-semibold tracking-tight text-[var(--foreground)]">
+                AI Smile Preview
+              </p>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6">
-        {!cameraOpen && !captured && (
-          <section className="space-y-8">
-            <div className="space-y-4 text-center sm:text-left">
-              <p className="text-sm font-medium uppercase tracking-wider text-teal-700">
-                Premium smile preview
-              </p>
-              <h1 className="text-balance text-3xl font-semibold tracking-tight text-[var(--foreground)] sm:text-4xl">
-                See your smile in a new light—before you visit the chair.
-              </h1>
-              <p className="max-w-2xl text-pretty text-base text-[var(--foreground-muted)] sm:text-lg">
-                Capture a quick selfie, pick a treatment direction, and preview an AI-enhanced smile
-                that keeps your face, lighting, and expression consistent while focusing changes on
-                the teeth.
-              </p>
-            </div>
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-10 px-4 py-10 sm:px-6 sm:py-12">
+        <div className="space-y-10">
+          <WizardHero
+            eyebrow="AI Smile Generator"
+            title="Design Your Dream Smile"
+            subtitle="Follow the simple steps below to generate your personalized smile preview — no commitment required."
+          />
+          <ProcedureSteps currentStep={procedureStep} />
+        </div>
 
-            <Card className="mx-auto max-w-xl border-teal-100/80 bg-white">
-              <CardHeader>
-                <CardTitle className="text-xl">Get started</CardTitle>
-                <CardDescription>
-                  Use your device camera for best results in good, even lighting.
+        {procedureStep === 1 && (
+          <section className="space-y-6">
+            <Card className="mx-auto max-w-xl border-emerald-500/15 bg-[var(--surface-elevated)]/90">
+              <CardHeader className="space-y-2">
+                <CardTitle className="text-xl font-medium tracking-tight">Your information</CardTitle>
+                <CardDescription className="text-[var(--foreground-muted)]">
+                  Demo fields only—nothing is saved in this sample unless you add a webhook.
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <Button type="button" size="lg" className="w-full sm:w-auto" onClick={openCamera}>
-                  <Camera className="size-5" aria-hidden />
-                  Take a Photo
+              <CardContent className="space-y-6">
+                <PatientInfoForm value={patient} onChange={setPatient} disabled={false} />
+                <ErrorMessage message={error} />
+                <Button type="button" size="lg" className="w-full sm:w-auto" onClick={goToTreatment}>
+                  Continue
                 </Button>
               </CardContent>
             </Card>
           </section>
         )}
 
-        {cameraOpen && !captured && (
+        {procedureStep === 2 && (
+          <section className="space-y-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <Button type="button" variant="ghost" size="sm" className="gap-1.5 px-2" onClick={backToInfo}>
+                <ArrowLeft className="size-4" aria-hidden />
+                Back
+              </Button>
+            </div>
+            <ErrorMessage message={error} />
+            <Card className="mx-auto max-w-xl border-emerald-500/15 bg-[var(--surface-elevated)]/90">
+              <CardHeader className="space-y-2">
+                <CardTitle className="text-xl font-medium tracking-tight">Treatment direction</CardTitle>
+                <CardDescription className="text-[var(--foreground-muted)]">
+                  Choose the style you would like to preview. You can change this later before
+                  generating.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <TreatmentSelector
+                  value={treatmentId}
+                  onChange={setTreatmentId}
+                  disabled={loading}
+                />
+                <Button type="button" size="lg" className="w-full sm:w-auto" onClick={goToPhoto}>
+                  <Camera className="size-5" aria-hidden />
+                  Open camera
+                </Button>
+              </CardContent>
+            </Card>
+          </section>
+        )}
+
+        {procedureStep === 3 && (
           <section className="space-y-4">
-            <h2 className="text-lg font-semibold text-[var(--foreground)]">Camera</h2>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button type="button" variant="ghost" size="sm" className="gap-1.5 px-2" onClick={() => setProcedureStep(2)}>
+                <ArrowLeft className="size-4" aria-hidden />
+                Back
+              </Button>
+            </div>
+            <ErrorMessage message={error} />
             <CameraCapture
               onCapture={handleCapture}
               onError={handleCameraError}
-              onCancel={() => setCameraOpen(false)}
+              onCancel={() => setProcedureStep(2)}
             />
           </section>
         )}
 
-        {captured && (
-          <section className="space-y-6">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-[var(--foreground)]">Your capture</h2>
+        {procedureStep === 4 && captured && (
+          <section className="space-y-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="space-y-1">
+                <h2 className="text-lg font-medium tracking-tight text-[var(--foreground)]">
+                  Your preview
+                </h2>
                 <p className="text-sm text-[var(--foreground-muted)]">
-                  Choose a treatment style, then generate your preview.
+                  Adjust treatment if you like, then generate your AI preview.
+                </p>
+                <p className="text-xs text-[var(--foreground-muted)]">
+                  <span className="text-emerald-500/80">Demo intake: </span>
+                  {patient.fullName} · {patient.email} · {patient.phone}
                 </p>
               </div>
-              <Button type="button" variant="secondary" onClick={retake}>
+              <Button type="button" variant="secondary" onClick={retakePhoto}>
                 Retake photo
               </Button>
             </div>
 
             <SmilePreview originalSrc={captured} enhancedSrc={enhancedUrl} />
 
-            <Card>
+            <Card className="border-emerald-500/12">
               <CardContent className="space-y-6 pt-6">
                 <TreatmentSelector
                   value={treatmentId}
@@ -177,9 +246,9 @@ export default function Home() {
                   disabled={loading}
                 />
 
-                <div className="flex flex-col gap-3 rounded-xl border border-[var(--border)] bg-slate-50/80 p-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="space-y-1 pr-4">
-                    <Label htmlFor="consistent-seed" className="text-base">
+                <div className="flex flex-col gap-3 rounded-2xl border border-[var(--border-subtle)] bg-black/25 p-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="space-y-1.5 pr-4">
+                    <Label htmlFor="consistent-seed" className="text-base font-medium text-[var(--foreground)]">
                       Use Consistent Results
                     </Label>
                     <p
@@ -187,12 +256,11 @@ export default function Home() {
                       className="text-xs leading-relaxed text-[var(--foreground-muted)]"
                     >
                       When on, the server sends your configured{" "}
-                      <code className="rounded bg-white px-1 py-0.5 text-[11px] text-teal-900">
+                      <code className="rounded-md border border-[var(--border-subtle)] bg-white/[0.06] px-1.5 py-0.5 font-mono text-[11px] text-emerald-200/90">
                         REPLICATE_SEED
                       </code>{" "}
-                      so runs can repeat the same look. When off, each generation uses random
-                      sampling for natural variation. Seeds help repeatability for the same model
-                      and inputs; provider or model updates can still change outputs over time.
+                      for repeatable previews. When off, each run varies. Model or host updates can
+                      still shift results over time.
                     </p>
                   </div>
                   <Switch
@@ -223,10 +291,13 @@ export default function Home() {
           </section>
         )}
 
-        <footer className="mt-auto border-t border-[var(--border)] pt-8 text-center text-xs text-[var(--foreground-muted)]">
-          <p className="mx-auto max-w-2xl leading-relaxed">
-            This AI smile preview is for visualization only and is not a diagnosis or treatment
-            plan. Please consult a licensed dentist for clinical recommendations.
+        <footer className="mt-auto border-t border-[var(--border-subtle)] pt-10 text-center">
+          <p className="mx-auto max-w-2xl text-xs leading-relaxed text-[var(--foreground-muted)]">
+            Demo prototype. This AI smile preview is for visualization only and is not a diagnosis or
+            treatment plan. Please consult a licensed dentist for clinical recommendations.
+          </p>
+          <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.2em] text-emerald-600/70">
+            Dentin Family Dentistry
           </p>
         </footer>
       </main>

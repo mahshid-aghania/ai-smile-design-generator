@@ -5,15 +5,16 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] disabled:pointer-events-none disabled:opacity-45 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-[var(--primary)] text-white shadow-sm hover:bg-[var(--primary-hover)] active:bg-[var(--primary-active)]",
+          "bg-[var(--primary)] text-emerald-950 shadow-[0_0_20px_-4px_rgba(16,185,129,0.45)] hover:bg-[var(--primary-hover)] hover:shadow-[0_0_28px_-4px_rgba(16,185,129,0.55)] active:bg-[var(--primary-active)]",
         secondary:
-          "border border-[var(--border)] bg-white text-[var(--foreground)] shadow-sm hover:bg-slate-50",
-        ghost: "text-[var(--foreground-muted)] hover:bg-slate-100 hover:text-[var(--foreground)]",
+          "border border-[var(--border-subtle)] bg-white/[0.04] text-[var(--foreground)] shadow-none hover:border-emerald-500/25 hover:bg-white/[0.07]",
+        ghost:
+          "text-[var(--foreground-muted)] hover:bg-white/[0.06] hover:text-[var(--foreground)]",
       },
       size: {
         default: "h-11 px-5 py-2",

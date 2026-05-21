@@ -17,15 +17,17 @@ A modern Next.js (App Router) app for **dental-style AI smile previews**: captur
 
 2. Set `REPLICATE_API_TOKEN` in `.env.local` (never commit real tokens).
 
-3. Optionally set `REPLICATE_MODEL` to a model slug you control. The default integration targets **`black-forest-labs/flux-kontext-max`** with inputs:
+3. **Patient intake (demo):** The form collects name, email, and phone for a realistic flow. Values are sent with the generate request and validated on the server; nothing is stored unless you set optional **`PATIENT_INTAKE_WEBHOOK_URL`** (e.g. Zapier) for your own demo backend.
+
+4. Optionally set `REPLICATE_MODEL` to a model slug you control. The default integration targets **`black-forest-labs/flux-kontext-max`** with inputs:
 
    - `prompt` — treatment-specific dental instruction plus a short identity-preservation line (see `lib/replicate-smile.ts`)
    - `input_image` — your uploaded capture (via Replicate Files)
    - `aspect_ratio` — `match_input_image`
 
-   Optional on the model: `seed` — set `REPLICATE_SEED` in `.env.local` (integer string) and turn on **Use Consistent Results** in the UI to send it; leave the toggle off for random variation each run. Parsing is safe: invalid or missing seeds are ignored without crashing (see `lib/replicate-seed.ts`).
-
    If you switch models, confirm its OpenAPI input schema matches or adjust `lib/replicate-smile.ts`.
+
+5. **Seeds:** Optional on the model: `seed` — set `REPLICATE_SEED` in `.env.local` (integer string) and turn on **Use Consistent Results** in the UI to send it; leave the toggle off for random variation each run. Parsing is safe: invalid or missing seeds are ignored without crashing (see `lib/replicate-seed.ts`).
 
 ## Run locally
 
@@ -47,13 +49,18 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Project structure
 
-- `app/page.tsx` — Landing, camera flow, treatment selection, preview
-- `app/api/generate-smile/route.ts` — Server route; uploads image and runs Replicate
+- `app/page.tsx` — Wizard flow: patient intake → treatment → camera → preview + generate
+- `app/api/generate-smile/route.ts` — Validates patient + image; runs Replicate; optional intake webhook
+- `components/PatientInfoForm.tsx` — Name, email, phone fields
+- `components/ProcedureSteps.tsx` — Step 1–4 indicator (Your Info → Treatment → Photo → Preview)
+- `components/WizardHero.tsx` — Serif headline + eyebrow + subtitle
 - `components/CameraCapture.tsx` — `getUserMedia` preview and capture
 - `components/TreatmentSelector.tsx` — Treatment radio options
 - `components/SmilePreview.tsx` — Before / after layout
 - `components/LoadingState.tsx` — Generation loading copy
 - `components/ErrorMessage.tsx` — Inline errors (camera, API, env)
+- `lib/patient-intake.ts` — Patient object type + validation
+- `lib/patient-webhook.ts` — Optional demo webhook (`PATIENT_INTAKE_WEBHOOK_URL`)
 - `lib/replicate-seed.ts` — Parse optional `REPLICATE_SEED` for reproducible runs
 - `lib/replicate-smile.ts` — Replicate file upload + `replicate.run`
 - `lib/treatment-prompts.ts` — Treatment IDs and exact prompts

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,10 +12,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const playfair = Playfair_Display({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
 export const metadata: Metadata = {
-  title: "AI Smile Design Generator",
+  title: "Dentin Family Dentistry · AI Smile Preview",
   description:
-    "Visualize dental smile enhancements with AI. Capture a photo, choose a treatment style, and preview a realistic smile concept.",
+    "Dentin Family Dentistry — visualize smile enhancements with AI. Capture a photo, choose a style, and preview a concept to discuss with your dentist.",
 };
 
 export default function RootLayout({
@@ -24,7 +30,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${playfair.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
         {children}
       </body>

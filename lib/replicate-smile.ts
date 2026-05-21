@@ -11,17 +11,57 @@ import Replicate from "replicate";
  */
 const DEFAULT_MODEL = "black-forest-labs/flux-kontext-max";
 
+function isImageUrlString(value: string): boolean {
+  return value.startsWith("http://") || value.startsWith("https://") || value.startsWith("data:");
+}
+
+/**
+ * `replicate.run` may return a plain URL string, a `data:` URI, an array of those,
+ * or (by default) a Replicate `FileOutput` stream object whose `toString()` is the URL.
+ */
 function normalizeImageOutput(output: unknown): string {
-  if (typeof output === "string" && output.startsWith("http")) {
+  if (typeof output === "string" && isImageUrlString(output)) {
     return output;
   }
-  if (Array.isArray(output)) {
-    const first = output[0];
-    if (typeof first === "string" && first.startsWith("http")) {
-      return first;
+
+  if (output !== null && typeof output === "object") {
+    if ("url" in output && typeof (output as { url?: unknown }).url === "function") {
+      try {
+        const u = (output as { url: () => URL }).url();
+        if (u instanceof URL && isImageUrlString(u.href)) {
+          return u.href;
+        }
+      } catch {
+        /* ignore */
+      }
+    }
+    if (typeof (output as { toString?: () => unknown }).toString === "function") {
+      const s = (output as { toString: () => unknown }).toString();
+      if (typeof s === "string" && isImageUrlString(s)) {
+        return s;
+      }
     }
   }
-  throw new Error("Unexpected output from Replicate: expected an image URL string.");
+
+  if (Array.isArray(output)) {
+    for (const item of output) {
+      try {
+        return normalizeImageOutput(item);
+      } catch {
+        /* try next */
+      }
+    }
+  }
+
+  const preview =
+    output === null || output === undefined
+      ? String(output)
+      : typeof output === "object"
+        ? `[object type=${(output as object).constructor?.name ?? "Object"}]`
+        : String(output).slice(0, 120);
+  throw new Error(
+    `Unexpected output from Replicate: expected an image URL string. Received: ${preview}`
+  );
 }
 
 export async function generateSmileWithReplicate(params: {
@@ -40,7 +80,11 @@ export async function generateSmileWithReplicate(params: {
     throw err;
   }
 
-  const replicate = new Replicate({ auth: token });
+  const replicate = new Replicate({
+    auth: token,
+    // Return plain https URLs from `run()` instead of FileOutput streams (easier to forward to the client).
+    useFileOutput: false,
+  });
 
   const bytes = new Uint8Array(params.imageBuffer);
   const blob = new Blob([bytes], { type: params.mimeType });

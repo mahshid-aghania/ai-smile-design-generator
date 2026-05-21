@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 
 import { generateSmileWithReplicate } from "@/lib/replicate-smile";
 import { parseReplicateSeedFromEnv } from "@/lib/replicate-seed";
+import { validatePatientIntake } from "@/lib/patient-intake";
+import { forwardPatientIntakeToWebhook } from "@/lib/patient-webhook";
 import { isTreatmentId, TREATMENT_PROMPTS } from "@/lib/treatment-prompts";
 
 export const runtime = "nodejs";
@@ -57,7 +59,17 @@ export async function POST(request: Request) {
       treatmentId?: string;
       /** When true, apply `REPLICATE_SEED` from the server if it parses to a valid integer. */
       useConsistentSeed?: unknown;
+      patient?: unknown;
     };
+
+    const patientResult = validatePatientIntake(body.patient);
+    if (!patientResult.ok) {
+      return NextResponse.json(
+        { error: { code: "INVALID_PATIENT", message: patientResult.message } },
+        { status: 400 }
+      );
+    }
+    const patient = patientResult.patient;
 
     if (!body.imageBase64 || typeof body.imageBase64 !== "string") {
       return NextResponse.json(
@@ -105,6 +117,12 @@ export async function POST(request: Request) {
       mimeType,
       prompt,
       ...(seed !== undefined ? { seed } : {}),
+    });
+
+    void forwardPatientIntakeToWebhook({
+      patient,
+      treatmentId: body.treatmentId,
+      previewImageUrl: resultUrl,
     });
 
     return NextResponse.json({ resultUrl });

@@ -12,12 +12,14 @@ type SmilePreviewProps = {
 export function SmilePreview({ originalSrc, enhancedSrc }: SmilePreviewProps) {
   return (
     <div className="grid gap-4 lg:grid-cols-2">
-      <Card>
+      <Card className="overflow-hidden border-emerald-500/10">
         <CardHeader>
-          <CardTitle className="text-base text-[var(--foreground-muted)]">Original</CardTitle>
+          <CardTitle className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-500/75">
+            Original
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border)] bg-slate-50">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-black/40 ring-1 ring-inset ring-white/[0.04]">
             <Image
               src={originalSrc}
               alt="Your captured smile"
@@ -29,12 +31,14 @@ export function SmilePreview({ originalSrc, enhancedSrc }: SmilePreviewProps) {
           </div>
         </CardContent>
       </Card>
-      <Card>
+      <Card className="overflow-hidden border-emerald-500/10">
         <CardHeader>
-          <CardTitle className="text-base text-[var(--foreground-muted)]">AI preview</CardTitle>
+          <CardTitle className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-500/75">
+            AI preview
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border)] bg-slate-50">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-black/40 ring-1 ring-inset ring-emerald-500/10">
             {enhancedSrc ? (
               <Image
                 src={enhancedSrc}
@@ -45,7 +49,7 @@ export function SmilePreview({ originalSrc, enhancedSrc }: SmilePreviewProps) {
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-50 to-teal-50/40 p-6 text-center text-sm text-[var(--foreground-muted)]">
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[var(--surface)] via-[var(--surface-elevated)] to-emerald-950/30 p-6 text-center text-sm leading-relaxed text-[var(--foreground-muted)]">
                 Your enhanced smile will appear here after generation.
               </div>
             )}
