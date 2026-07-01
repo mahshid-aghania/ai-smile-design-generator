@@ -33,16 +33,16 @@ export function LoadingState({ active }: LoadingStateProps) {
   if (!active) return null;
 
   return (
-    <Card className="border-emerald-500/25 bg-emerald-500/[0.06] shadow-[0_0_32px_-12px_rgba(16,185,129,0.25)]">
+    <Card className="border-blue-100 bg-blue-50/60 shadow-[0_0_32px_-12px_rgba(59,130,246,0.12)]">
       <CardContent className="flex flex-col items-center gap-4 py-8 text-center sm:flex-row sm:text-left">
         <div className="relative flex size-16 shrink-0 items-center justify-center">
           <span
-            className="absolute inset-0 rounded-full bg-emerald-500/15 animate-ping"
+            className="absolute inset-0 rounded-full bg-blue-400/20 animate-ping"
             aria-hidden
           />
-          <div className="relative flex size-14 items-center justify-center rounded-full border border-emerald-500/30 bg-black/40">
+          <div className="relative flex size-14 items-center justify-center rounded-full border border-blue-200 bg-white">
             <Hourglass
-              className="size-8 text-emerald-400 animate-[hourglass-wiggle_1.2s_ease-in-out_infinite]"
+              className="size-8 text-blue-500 animate-[hourglass-wiggle_1.2s_ease-in-out_infinite]"
               aria-hidden
             />
           </div>
@@ -54,7 +54,7 @@ export function LoadingState({ active }: LoadingStateProps) {
           <p key={messageIndex} className="text-sm text-[var(--foreground-muted)]">
             {WAIT_MESSAGES[messageIndex]}
           </p>
-          <p className="text-xs text-emerald-500/70">Usually under a minute — thanks for waiting!</p>
+          <p className="text-xs text-blue-500">Usually under a minute — thanks for waiting!</p>
         </div>
       </CardContent>
     </Card>

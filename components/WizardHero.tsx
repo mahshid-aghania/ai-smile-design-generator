@@ -14,7 +14,7 @@ export function WizardHero({ eyebrow, title, subtitle, className, as: Heading = 
   return (
     <div className={cn("space-y-4 text-center", className)}>
       {eyebrow ? (
-        <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-emerald-400/90 sm:text-[11px]">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-blue-500 sm:text-[11px]">
           {eyebrow}
         </p>
       ) : null}

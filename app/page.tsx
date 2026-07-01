@@ -115,21 +115,28 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b border-[var(--border-subtle)] bg-[var(--surface)]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-5 sm:px-6">
+      <header className="border-b border-[var(--border-subtle)] bg-white/90 backdrop-blur-xl shadow-sm">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="relative flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-700 text-emerald-950 shadow-[0_0_24px_-6px_rgba(16,185,129,0.65)]">
+            <div className="relative flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-800 text-white shadow-[0_4px_14px_-4px_rgba(29,78,216,0.55)]">
               <Sparkles className="size-[18px]" aria-hidden strokeWidth={2.25} />
             </div>
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-emerald-400/90">
+              <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">
                 Dentin Family Dentistry
               </p>
               <p className="text-sm font-semibold tracking-tight text-[var(--foreground)]">
-                AI Smile Preview
+                AI Smile Preview · Vaughan, ON
               </p>
             </div>
           </div>
+          <a
+            href="tel:+14379002200"
+            className="hidden items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--primary-hover)] sm:flex"
+            aria-label="Call 437-900-2200"
+          >
+            📞 437-900-2200
+          </a>
         </div>
       </header>
 
@@ -148,7 +155,7 @@ export default function Home() {
 
         {procedureStep === 1 && (
           <section className="space-y-6">
-            <Card className="mx-auto max-w-xl border-emerald-500/15 bg-[var(--surface-elevated)]/90">
+            <Card className="mx-auto max-w-xl border-blue-100">
               <CardHeader className="space-y-2">
                 <CardTitle className="text-xl font-medium tracking-tight">Your information</CardTitle>
                 <CardDescription className="text-[var(--foreground-muted)]">
@@ -175,7 +182,7 @@ export default function Home() {
               </Button>
             </div>
             <ErrorMessage message={error} />
-            <Card className="mx-auto max-w-xl border-emerald-500/15 bg-[var(--surface-elevated)]/90">
+            <Card className="mx-auto max-w-xl border-blue-100">
               <CardHeader className="space-y-2">
                 <CardTitle className="text-xl font-medium tracking-tight">Treatment direction</CardTitle>
                 <CardDescription className="text-[var(--foreground-muted)]">
@@ -224,11 +231,11 @@ export default function Home() {
                 </h2>
                 <p className="text-sm text-[var(--foreground-muted)]">
                   Treatment:{" "}
-                  <span className="text-emerald-400/90">{TREATMENT_LABELS[treatmentId]}</span>
+                  <span className="text-blue-600">{TREATMENT_LABELS[treatmentId]}</span>
                   {" · "}
                   <button
                     type="button"
-                    className="text-emerald-500/80 underline-offset-2 hover:text-emerald-400 hover:underline"
+                    className="text-blue-500 underline-offset-2 hover:text-blue-700 hover:underline"
                     onClick={() => setProcedureStep(2)}
                     disabled={loading}
                   >
@@ -236,7 +243,7 @@ export default function Home() {
                   </button>
                 </p>
                 <p className="text-xs text-[var(--foreground-muted)]">
-                  <span className="text-emerald-500/80">Demo intake: </span>
+                  <span className="text-blue-500">Demo intake: </span>
                   {patient.fullName} · {patient.email} · {patient.phone}
                 </p>
               </div>
@@ -274,8 +281,8 @@ export default function Home() {
             Demo prototype. This AI smile preview is for visualization only and is not a diagnosis or
             treatment plan. Please consult a licensed dentist for clinical recommendations.
           </p>
-          <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.2em] text-emerald-600/70">
-            Dentin Family Dentistry
+          <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-blue-500">
+            Dentin Family Dentistry · Vaughan, ON
           </p>
         </footer>
       </main>

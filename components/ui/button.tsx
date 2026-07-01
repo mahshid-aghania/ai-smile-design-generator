@@ -10,11 +10,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[var(--primary)] text-emerald-950 shadow-[0_0_20px_-4px_rgba(16,185,129,0.45)] hover:bg-[var(--primary-hover)] hover:shadow-[0_0_28px_-4px_rgba(16,185,129,0.55)] active:bg-[var(--primary-active)]",
+          "bg-[var(--primary)] text-white shadow-[0_4px_16px_-4px_rgba(29,78,216,0.40)] hover:bg-[var(--primary-hover)] hover:shadow-[0_6px_20px_-4px_rgba(29,78,216,0.55)] active:bg-[var(--primary-active)]",
         secondary:
-          "border border-[var(--border-subtle)] bg-white/[0.04] text-[var(--foreground)] shadow-none hover:border-emerald-500/25 hover:bg-white/[0.07]",
+          "border border-[var(--border-subtle)] bg-white text-[var(--foreground)] shadow-sm hover:border-blue-300 hover:bg-blue-50",
         ghost:
-          "text-[var(--foreground-muted)] hover:bg-white/[0.06] hover:text-[var(--foreground)]",
+          "text-[var(--foreground-muted)] hover:bg-black/[0.04] hover:text-[var(--foreground)]",
+        gold:
+          "bg-amber-500 text-white shadow-[0_4px_16px_-4px_rgba(217,119,6,0.40)] hover:bg-amber-600 active:bg-amber-700",
       },
       size: {
         default: "h-11 px-5 py-2",

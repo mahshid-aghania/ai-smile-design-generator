@@ -18,9 +18,6 @@ type ProcedureStepsProps = {
   className?: string;
 };
 
-/**
- * Horizontal step indicator: emerald accent on the active step, muted zinc for others.
- */
 export function ProcedureSteps({ currentStep, className }: ProcedureStepsProps) {
   return (
     <div
@@ -40,7 +37,7 @@ export function ProcedureSteps({ currentStep, className }: ProcedureStepsProps) 
                 <div
                   className={cn(
                     "mt-[18px] h-px min-w-[8px] flex-1 sm:mt-5",
-                    currentStep > index ? "bg-emerald-500/40" : "bg-zinc-800"
+                    currentStep > index ? "bg-blue-300" : "bg-slate-200"
                   )}
                   aria-hidden
                 />
@@ -51,10 +48,9 @@ export function ProcedureSteps({ currentStep, className }: ProcedureStepsProps) 
                   aria-current={isCurrent ? "step" : undefined}
                   className={cn(
                     "flex size-9 shrink-0 items-center justify-center rounded-full border-2 text-xs font-semibold tabular-nums transition-colors sm:size-10 sm:text-sm",
-                    isCurrent &&
-                      "border-emerald-400 text-emerald-300 shadow-[0_0_20px_-6px_rgba(52,211,153,0.45)]",
-                    isComplete && !isCurrent && "border-emerald-500/35 bg-emerald-500/15 text-emerald-400/90",
-                    !isActive && "border-zinc-700 bg-zinc-900/80 text-zinc-500"
+                    isCurrent && "border-blue-500 bg-blue-50 text-blue-700 shadow-[0_0_16px_-4px_rgba(59,130,246,0.4)]",
+                    isComplete && !isCurrent && "border-blue-300 bg-blue-50 text-blue-500",
+                    !isActive && "border-slate-200 bg-white text-slate-400"
                   )}
                 >
                   {step.id}
@@ -62,9 +58,9 @@ export function ProcedureSteps({ currentStep, className }: ProcedureStepsProps) 
                 <span
                   className={cn(
                     "max-w-[5.5rem] text-center text-[10px] font-medium uppercase tracking-[0.12em] sm:text-[11px] sm:tracking-[0.14em]",
-                    isCurrent && "text-emerald-400",
-                    isComplete && !isCurrent && "text-emerald-500/70",
-                    !isActive && "text-zinc-500"
+                    isCurrent && "text-blue-600",
+                    isComplete && !isCurrent && "text-blue-400",
+                    !isActive && "text-slate-400"
                   )}
                 >
                   {step.label}

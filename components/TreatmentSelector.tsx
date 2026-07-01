@@ -24,7 +24,7 @@ export function TreatmentSelector({ value, onChange, disabled }: TreatmentSelect
         {TREATMENT_IDS.map((id) => (
           <label
             key={id}
-            className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-subtle)] bg-black/20 p-3.5 transition-all duration-200 hover:border-emerald-500/30 hover:bg-white/[0.04] has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-45"
+            className="flex cursor-pointer items-start gap-3 rounded-2xl border border-[var(--border-subtle)] bg-white p-3.5 transition-all duration-200 hover:border-blue-300 hover:bg-blue-50 has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-45"
           >
             <RadioGroupItem value={id} id={id} className="mt-1" />
             <div className="space-y-0.5">
