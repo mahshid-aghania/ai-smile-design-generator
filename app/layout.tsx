@@ -19,9 +19,9 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Dentin Family Dentistry · AI Smile Preview",
+  title: "Dental Implants From $299/Month | Vaughan, ON | Dentin Family Dentistry",
   description:
-    "Dentin Family Dentistry — visualize smile enhancements with AI. Capture a photo, choose a style, and preview a concept to discuss with your dentist.",
+    "Affordable dental implants in Vaughan starting at $299/month with $500 down. Preview your new smile with our free AI Smile Generator. Call 437-900-2200.",
 };
 
 export default function RootLayout({

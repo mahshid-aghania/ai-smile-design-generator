@@ -5,6 +5,7 @@ import { ArrowLeft, Camera, Sparkles } from "lucide-react";
 
 import { CameraCapture } from "@/components/CameraCapture";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { FinancingPromoBanner } from "@/components/FinancingPromoBanner";
 import { LoadingState } from "@/components/LoadingState";
 import { PatientInfoForm } from "@/components/PatientInfoForm";
 import { ProcedureSteps, type ProcedureStepId } from "@/components/ProcedureSteps";
@@ -133,8 +134,11 @@ export default function Home() {
       </header>
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-10 px-4 py-10 sm:px-6 sm:py-12">
-        <div className="space-y-10">
+        <FinancingPromoBanner />
+
+        <div id="smile-wizard" className="space-y-10">
           <WizardHero
+            as="h2"
             eyebrow="AI Smile Generator"
             title="Design Your Dream Smile"
             subtitle="Follow the simple steps below to generate your personalized smile preview — no commitment required."
