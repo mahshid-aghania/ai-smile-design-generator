@@ -14,17 +14,17 @@ type SmilePreviewProps = {
 export function SmilePreview({ originalSrc, enhancedSrc, belowOriginal }: SmilePreviewProps) {
   return (
     <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
-      <Card className="overflow-hidden border-emerald-500/10">
+      <Card className="overflow-hidden">
         <CardHeader>
-          <CardTitle className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-500/75">
-            Original
+          <CardTitle className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--foreground-muted)]">
+            Before
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-black/40 ring-1 ring-inset ring-white/[0.04]">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)]">
             <Image
               src={originalSrc}
-              alt="Your captured smile"
+              alt="Your original smile photo"
               fill
               unoptimized
               className="object-cover"
@@ -34,25 +34,26 @@ export function SmilePreview({ originalSrc, enhancedSrc, belowOriginal }: SmileP
           {belowOriginal ? <div className="w-full">{belowOriginal}</div> : null}
         </CardContent>
       </Card>
-      <Card className="overflow-hidden border-emerald-500/10">
+
+      <Card className="overflow-hidden border-[var(--border)]">
         <CardHeader>
-          <CardTitle className="text-xs font-medium uppercase tracking-[0.2em] text-emerald-500/75">
-            AI preview
+          <CardTitle className="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--primary)]">
+            After · AI preview
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-black/40 ring-1 ring-inset ring-emerald-500/10">
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)]">
             {enhancedSrc ? (
               <Image
                 src={enhancedSrc}
-                alt="AI enhanced smile preview"
+                alt="AI generated preview of your enhanced smile"
                 fill
                 unoptimized
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[var(--surface)] via-[var(--surface-elevated)] to-emerald-950/30 p-6 text-center text-sm leading-relaxed text-[var(--foreground-muted)]">
+              <div className="absolute inset-0 flex items-center justify-center bg-[var(--primary-soft)]/50 p-6 text-center text-sm leading-relaxed text-[var(--foreground-muted)]">
                 Your enhanced smile will appear here after you generate.
               </div>
             )}

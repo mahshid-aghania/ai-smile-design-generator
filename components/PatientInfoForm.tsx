@@ -60,9 +60,9 @@ export function PatientInfoForm({ value, onChange, disabled }: PatientInfoFormPr
           />
         </div>
       </div>
-      <p className="text-xs leading-relaxed text-[var(--foreground-muted)]">
-        Demo only: sample intake for prototyping. This starter app does not save your details unless
-        you wire up a webhook (see README).
+      <p className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] px-3.5 py-3 text-xs leading-relaxed text-[var(--foreground-muted)]">
+        Demo mode: your details are not saved unless a lead webhook is configured (see README). We
+        never share your information.
       </p>
     </div>
   );

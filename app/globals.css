@@ -1,33 +1,43 @@
 @import "tailwindcss";
 
 /**
- * Dentin Family Dentistry — minimal dark UI, emerald accent.
- * Surfaces stay slightly above true black for a calm, clinical-luxe feel.
+ * Dentin Family Dentistry — light clinical UI, teal accent.
+ * Palette: white / soft gray surfaces, deep slate-teal text, teal primary.
  */
 :root {
-  --background: #070a09;
-  --surface: #0e1311;
-  --surface-elevated: #141c19;
-  --foreground: #ecfdf5;
-  --foreground-muted: #94a3b8;
-  --primary: #10b981;
-  --primary-hover: #059669;
-  --primary-active: #047857;
-  --primary-glow: rgba(16, 185, 129, 0.22);
-  --ring: #34d399;
-  --border: rgba(16, 185, 129, 0.14);
-  --border-subtle: rgba(255, 255, 255, 0.06);
+  --background: #f6f9fa;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --surface-muted: #eef4f5;
+  --foreground: #0f2b31;
+  --foreground-muted: #5a7178;
+  --primary: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-active: #115e59;
+  --primary-soft: #e6f4f3;
+  --primary-glow: rgba(13, 148, 136, 0.12);
+  --ring: #14b8a6;
+  --border: rgba(13, 148, 136, 0.18);
+  --border-subtle: rgba(15, 43, 49, 0.09);
+  --shadow-soft: 0 1px 2px rgba(15, 43, 49, 0.04), 0 12px 32px -12px rgba(15, 43, 49, 0.12);
+  --shadow-lift: 0 1px 2px rgba(15, 43, 49, 0.05), 0 24px 48px -20px rgba(15, 43, 49, 0.18);
+}
+
+@theme {
+  --breakpoint-xs: 25rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-primary: var(--primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
   scroll-behavior: smooth;
 }
 
@@ -35,21 +45,26 @@ body {
   min-height: 100dvh;
   background-color: var(--background);
   background-image: radial-gradient(
-    120% 80% at 50% -10%,
+    110% 70% at 50% -10%,
     var(--primary-glow),
-    transparent 55%
+    transparent 60%
   );
   color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 ::selection {
-  background-color: rgba(16, 185, 129, 0.35);
+  background-color: rgba(13, 148, 136, 0.2);
   color: var(--foreground);
 }
 
 .font-display {
   font-family: var(--font-display), ui-serif, Georgia, "Times New Roman", serif;
+}
+
+/* Offset anchor scrolling for the sticky header */
+[id] {
+  scroll-margin-top: 5.5rem;
 }
 
 @keyframes hourglass-wiggle {

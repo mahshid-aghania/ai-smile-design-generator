@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
+import { Check } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -19,16 +20,12 @@ type ProcedureStepsProps = {
 };
 
 /**
- * Horizontal step indicator: emerald accent on the active step, muted zinc for others.
+ * Numbered 1–4 progress indicator: teal accent on active/complete steps.
  */
 export function ProcedureSteps({ currentStep, className }: ProcedureStepsProps) {
   return (
-    <div
-      className={cn("mx-auto w-full max-w-lg px-2", className)}
-      role="list"
-      aria-label="Smile preview steps"
-    >
-      <div className="flex w-full items-start">
+    <div className={cn("mx-auto w-full max-w-lg px-2", className)}>
+      <ol className="flex w-full items-start" aria-label="Smile preview steps">
         {STEPS.map((step, index) => {
           const isComplete = currentStep > step.id;
           const isCurrent = currentStep === step.id;
@@ -39,41 +36,52 @@ export function ProcedureSteps({ currentStep, className }: ProcedureStepsProps) 
               {index > 0 && (
                 <div
                   className={cn(
-                    "mt-[18px] h-px min-w-[8px] flex-1 sm:mt-5",
-                    currentStep > index ? "bg-emerald-500/40" : "bg-zinc-800"
+                    "mt-[18px] h-0.5 min-w-[8px] flex-1 rounded-full transition-colors sm:mt-5",
+                    currentStep > index ? "bg-[var(--primary)]" : "bg-[var(--border-subtle)]"
                   )}
                   aria-hidden
                 />
               )}
-              <div className="flex w-14 shrink-0 flex-col items-center gap-2 sm:w-16">
-                <div
-                  role="listitem"
-                  aria-current={isCurrent ? "step" : undefined}
-                  className={cn(
-                    "flex size-9 shrink-0 items-center justify-center rounded-full border-2 text-xs font-semibold tabular-nums transition-colors sm:size-10 sm:text-sm",
-                    isCurrent &&
-                      "border-emerald-400 text-emerald-300 shadow-[0_0_20px_-6px_rgba(52,211,153,0.45)]",
-                    isComplete && !isCurrent && "border-emerald-500/35 bg-emerald-500/15 text-emerald-400/90",
-                    !isActive && "border-zinc-700 bg-zinc-900/80 text-zinc-500"
-                  )}
-                >
-                  {step.id}
-                </div>
+              <li
+                className="flex w-16 shrink-0 flex-col items-center gap-2 sm:w-20"
+                aria-current={isCurrent ? "step" : undefined}
+              >
                 <span
                   className={cn(
-                    "max-w-[5.5rem] text-center text-[10px] font-medium uppercase tracking-[0.12em] sm:text-[11px] sm:tracking-[0.14em]",
-                    isCurrent && "text-emerald-400",
-                    isComplete && !isCurrent && "text-emerald-500/70",
-                    !isActive && "text-zinc-500"
+                    "flex size-9 shrink-0 items-center justify-center rounded-full border-2 text-xs font-bold tabular-nums transition-all sm:size-10 sm:text-sm",
+                    isCurrent &&
+                      "border-[var(--primary)] bg-[var(--primary)] text-white shadow-[0_8px_18px_-8px_rgba(13,148,136,0.7)]",
+                    isComplete &&
+                      !isCurrent &&
+                      "border-[var(--primary)]/40 bg-[var(--primary-soft)] text-[var(--primary-hover)]",
+                    !isActive &&
+                      "border-[var(--border-subtle)] bg-[var(--surface)] text-[var(--foreground-muted)]/70"
+                  )}
+                >
+                  {isComplete && !isCurrent ? (
+                    <>
+                      <Check className="size-4" aria-hidden strokeWidth={3} />
+                      <span className="sr-only">Completed</span>
+                    </>
+                  ) : (
+                    step.id
+                  )}
+                </span>
+                <span
+                  className={cn(
+                    "max-w-[5.5rem] text-center text-[10px] font-semibold uppercase tracking-[0.1em] sm:text-[11px]",
+                    isCurrent && "text-[var(--primary-hover)]",
+                    isComplete && !isCurrent && "text-[var(--primary)]",
+                    !isActive && "text-[var(--foreground-muted)]/70"
                   )}
                 >
                   {step.label}
                 </span>
-              </div>
+              </li>
             </Fragment>
           );
         })}
-      </div>
+      </ol>
     </div>
   );
 }
