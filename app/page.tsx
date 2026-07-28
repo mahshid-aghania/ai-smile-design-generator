@@ -1,19 +1,23 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ArrowLeft, Camera, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Phone, Sparkles } from "lucide-react";
 
-import { CameraCapture } from "@/components/CameraCapture";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { FinancingPromoBanner } from "@/components/FinancingPromoBanner";
 import { LoadingState } from "@/components/LoadingState";
 import { PatientInfoForm } from "@/components/PatientInfoForm";
+import { PhotoStep } from "@/components/PhotoStep";
 import { ProcedureSteps, type ProcedureStepId } from "@/components/ProcedureSteps";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
 import { SmilePreview } from "@/components/SmilePreview";
 import { TreatmentSelector } from "@/components/TreatmentSelector";
+import { TrustStrip } from "@/components/TrustStrip";
 import { WizardHero } from "@/components/WizardHero";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { trackEvent } from "@/lib/analytics";
 import type { PatientIntake } from "@/lib/patient-intake";
 import { validatePatientIntake } from "@/lib/patient-intake";
 import { TREATMENT_LABELS, type TreatmentId } from "@/lib/treatment-prompts";
@@ -32,6 +36,7 @@ export default function Home() {
   const [enhancedUrl, setEnhancedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const goToTreatment = useCallback(() => {
     const check = validatePatientIntake(patient);
     if (!check.ok) {
@@ -39,36 +44,28 @@ export default function Home() {
       return;
     }
     setError(null);
+    trackEvent("wizard_step_complete", { step: 1, name: "your_info" });
     setProcedureStep(2);
   }, [patient]);
 
   const goToPhoto = useCallback(() => {
     setError(null);
+    trackEvent("wizard_step_complete", { step: 2, name: "treatment", treatment: treatmentId });
     setProcedureStep(3);
-  }, []);
+  }, [treatmentId]);
 
-  const handleCapture = useCallback((dataUrl: string) => {
-    setCaptured(dataUrl);
+  const goToPreview = useCallback(() => {
+    setError(null);
+    setEnhancedUrl(null);
+    trackEvent("wizard_step_complete", { step: 3, name: "photo" });
     setProcedureStep(4);
+  }, []);
+
+  const handlePhotoChange = useCallback((dataUrl: string | null) => {
+    setCaptured(dataUrl);
     setEnhancedUrl(null);
     setError(null);
-  }, []);
-
-  const handleCameraError = useCallback((message: string) => {
-    setError(message);
-    setProcedureStep(2);
-  }, []);
-
-  const retakePhoto = useCallback(() => {
-    setCaptured(null);
-    setEnhancedUrl(null);
-    setError(null);
-    setProcedureStep(3);
-  }, []);
-
-  const backToInfo = useCallback(() => {
-    setError(null);
-    setProcedureStep(1);
+    if (dataUrl) trackEvent("photo_selected");
   }, []);
 
   const generate = useCallback(async () => {
@@ -76,6 +73,7 @@ export default function Home() {
     setLoading(true);
     setError(null);
     setEnhancedUrl(null);
+    trackEvent("preview_generate_start", { treatment: treatmentId });
     try {
       const res = await fetch("/api/generate-smile", {
         method: "POST",
@@ -95,19 +93,23 @@ export default function Home() {
         const msg =
           data.error?.message ??
           (res.status === 503
-            ? "Server configuration is incomplete. Add REPLICATE_API_TOKEN to .env.local."
-            : "Something went wrong while generating your preview.");
+            ? "Our preview service isn't configured yet. Please call 437-900-2200 and we'll help right away."
+            : "Something went wrong while generating your preview. Please try again.");
         setError(msg);
+        trackEvent("preview_generate_error", { status: res.status });
         return;
       }
 
       if (data.resultUrl) {
         setEnhancedUrl(data.resultUrl);
+        trackEvent("preview_generate_success", { treatment: treatmentId });
       } else {
-        setError("The server returned an unexpected response.");
+        setError("The server returned an unexpected response. Please try again.");
+        trackEvent("preview_generate_error", { status: 200, reason: "no_result" });
       }
     } catch {
       setError("Network error. Check your connection and try again.");
+      trackEvent("preview_generate_error", { reason: "network" });
     } finally {
       setLoading(false);
     }
@@ -115,28 +117,13 @@ export default function Home() {
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="border-b border-[var(--border-subtle)] bg-[var(--surface)]/80 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-5 sm:px-6">
-          <div className="flex items-center gap-3">
-            <div className="relative flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-700 text-emerald-950 shadow-[0_0_24px_-6px_rgba(16,185,129,0.65)]">
-              <Sparkles className="size-[18px]" aria-hidden strokeWidth={2.25} />
-            </div>
-            <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-emerald-400/90">
-                Dentin Family Dentistry
-              </p>
-              <p className="text-sm font-semibold tracking-tight text-[var(--foreground)]">
-                AI Smile Preview
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-10 px-4 py-10 sm:px-6 sm:py-12">
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
         <FinancingPromoBanner />
+        <TrustStrip />
 
-        <div id="smile-wizard" className="space-y-10">
+        <section id="smile-wizard" className="space-y-8 pt-6">
           <WizardHero
             as="h2"
             eyebrow="AI Smile Generator"
@@ -144,141 +131,191 @@ export default function Home() {
             subtitle="Follow the simple steps below to generate your personalized smile preview — no commitment required."
           />
           <ProcedureSteps currentStep={procedureStep} />
-        </div>
 
-        {procedureStep === 1 && (
-          <section className="space-y-6">
-            <Card className="mx-auto max-w-xl border-emerald-500/15 bg-[var(--surface-elevated)]/90">
-              <CardHeader className="space-y-2">
-                <CardTitle className="text-xl font-medium tracking-tight">Your information</CardTitle>
-                <CardDescription className="text-[var(--foreground-muted)]">
-                  Demo fields only—nothing is saved in this sample unless you add a webhook.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <PatientInfoForm value={patient} onChange={setPatient} disabled={false} />
-                <ErrorMessage message={error} />
-                <Button type="button" size="lg" className="w-full sm:w-auto" onClick={goToTreatment}>
-                  Continue
-                </Button>
-              </CardContent>
-            </Card>
-          </section>
-        )}
-
-        {procedureStep === 2 && (
-          <section className="space-y-6">
-            <div className="flex flex-wrap items-center gap-3">
-              <Button type="button" variant="ghost" size="sm" className="gap-1.5 px-2" onClick={backToInfo}>
-                <ArrowLeft className="size-4" aria-hidden />
-                Back
-              </Button>
+          {procedureStep === 1 && (
+            <div className="space-y-4">
+              <ErrorMessage message={error} />
+              <Card className="mx-auto max-w-xl">
+                <CardHeader className="space-y-2">
+                  <CardTitle className="text-xl font-semibold tracking-tight">
+                    Your information
+                  </CardTitle>
+                  <CardDescription>
+                    So we can send your preview and answer any questions about financing.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <PatientInfoForm value={patient} onChange={setPatient} disabled={false} />
+                  <Button type="button" size="lg" className="w-full" onClick={goToTreatment}>
+                    Continue
+                    <ArrowRight className="size-4" aria-hidden />
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
-            <ErrorMessage message={error} />
-            <Card className="mx-auto max-w-xl border-emerald-500/15 bg-[var(--surface-elevated)]/90">
-              <CardHeader className="space-y-2">
-                <CardTitle className="text-xl font-medium tracking-tight">Treatment direction</CardTitle>
-                <CardDescription className="text-[var(--foreground-muted)]">
-                  Choose the style you would like to preview. You can change this later before
-                  generating.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <TreatmentSelector
-                  value={treatmentId}
-                  onChange={setTreatmentId}
-                  disabled={loading}
-                />
-                <Button type="button" size="lg" className="w-full sm:w-auto" onClick={goToPhoto}>
-                  <Camera className="size-5" aria-hidden />
-                  Open camera
+          )}
+
+          {procedureStep === 2 && (
+            <div className="space-y-4">
+              <div className="mx-auto max-w-xl">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="gap-1.5 px-2"
+                  onClick={() => {
+                    setError(null);
+                    setProcedureStep(1);
+                  }}
+                >
+                  <ArrowLeft className="size-4" aria-hidden />
+                  Back
                 </Button>
-              </CardContent>
-            </Card>
-          </section>
-        )}
-
-        {procedureStep === 3 && (
-          <section className="space-y-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <Button type="button" variant="ghost" size="sm" className="gap-1.5 px-2" onClick={() => setProcedureStep(2)}>
-                <ArrowLeft className="size-4" aria-hidden />
-                Back
-              </Button>
-            </div>
-            <ErrorMessage message={error} />
-            <CameraCapture
-              onCapture={handleCapture}
-              onError={handleCameraError}
-              onCancel={() => setProcedureStep(2)}
-            />
-          </section>
-        )}
-
-        {procedureStep === 4 && captured && (
-          <section className="space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div className="space-y-1">
-                <h2 className="text-lg font-medium tracking-tight text-[var(--foreground)]">
-                  Your photo is ready
-                </h2>
-                <p className="text-sm text-[var(--foreground-muted)]">
-                  Treatment:{" "}
-                  <span className="text-emerald-400/90">{TREATMENT_LABELS[treatmentId]}</span>
-                  {" · "}
-                  <button
-                    type="button"
-                    className="text-emerald-500/80 underline-offset-2 hover:text-emerald-400 hover:underline"
-                    onClick={() => setProcedureStep(2)}
-                    disabled={loading}
-                  >
-                    Change
-                  </button>
-                </p>
-                <p className="text-xs text-[var(--foreground-muted)]">
-                  <span className="text-emerald-500/80">Demo intake: </span>
-                  {patient.fullName} · {patient.email} · {patient.phone}
-                </p>
               </div>
-              <Button type="button" variant="secondary" onClick={retakePhoto} disabled={loading}>
-                Retake photo
-              </Button>
+              <ErrorMessage message={error} />
+              <Card className="mx-auto max-w-xl">
+                <CardHeader className="space-y-2">
+                  <CardTitle className="text-xl font-semibold tracking-tight">
+                    Treatment direction
+                  </CardTitle>
+                  <CardDescription>
+                    Choose the result you would like to preview. You can change this before
+                    generating.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <TreatmentSelector
+                    value={treatmentId}
+                    onChange={setTreatmentId}
+                    disabled={loading}
+                  />
+                  <Button type="button" size="lg" className="w-full" onClick={goToPhoto}>
+                    Continue
+                    <ArrowRight className="size-4" aria-hidden />
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
+          )}
 
-            <ErrorMessage message={error} />
+          {procedureStep === 3 && (
+            <div className="space-y-4">
+              <div className="mx-auto max-w-xl">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="gap-1.5 px-2"
+                  onClick={() => {
+                    setError(null);
+                    setProcedureStep(2);
+                  }}
+                >
+                  <ArrowLeft className="size-4" aria-hidden />
+                  Back
+                </Button>
+              </div>
+              <ErrorMessage message={error} />
+              <PhotoStep
+                value={captured}
+                onChange={handlePhotoChange}
+                onConfirm={goToPreview}
+                onError={setError}
+              />
+            </div>
+          )}
 
-            <SmilePreview
-              originalSrc={captured}
-              enhancedSrc={enhancedUrl}
-              belowOriginal={
-                <div className="space-y-3">
+          {procedureStep === 4 && captured && (
+            <div className="space-y-6">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1.5">
                   <Button
                     type="button"
-                    size="lg"
-                    className="w-full"
-                    onClick={() => void generate()}
+                    variant="ghost"
+                    size="sm"
+                    className="-ml-2 gap-1.5 px-2"
+                    onClick={() => setProcedureStep(3)}
                     disabled={loading}
                   >
-                    <Sparkles className="size-4" aria-hidden />
-                    Generate AI preview
+                    <ArrowLeft className="size-4" aria-hidden />
+                    Back to photo
                   </Button>
-                  <LoadingState active={loading} />
+                  <p className="text-sm text-[var(--foreground-muted)]">
+                    Treatment:{" "}
+                    <span className="font-semibold text-[var(--foreground)]">
+                      {TREATMENT_LABELS[treatmentId]}
+                    </span>
+                    {" · "}
+                    <button
+                      type="button"
+                      className="font-medium text-[var(--primary)] underline-offset-2 hover:underline"
+                      onClick={() => setProcedureStep(2)}
+                      disabled={loading}
+                    >
+                      Change
+                    </button>
+                  </p>
                 </div>
-              }
-            />
-          </section>
-        )}
+              </div>
 
-        <footer className="mt-auto border-t border-[var(--border-subtle)] pt-10 text-center">
-          <p className="mx-auto max-w-2xl text-xs leading-relaxed text-[var(--foreground-muted)]">
-            Demo prototype. This AI smile preview is for visualization only and is not a diagnosis or
-            treatment plan. Please consult a licensed dentist for clinical recommendations.
+              <ErrorMessage message={error} />
+
+              <SmilePreview
+                originalSrc={captured}
+                enhancedSrc={enhancedUrl}
+                belowOriginal={
+                  <div className="space-y-3">
+                    <Button
+                      type="button"
+                      size="lg"
+                      className="w-full"
+                      onClick={() => void generate()}
+                      disabled={loading}
+                    >
+                      <Sparkles className="size-4" aria-hidden />
+                      {enhancedUrl ? "Generate again" : "Generate AI preview"}
+                    </Button>
+                    <LoadingState active={loading} />
+                  </div>
+                }
+              />
+
+              {/* Final CTA */}
+              <Card className="border-[var(--border)] bg-[var(--primary-soft)]/50">
+                <CardContent className="flex flex-col items-center gap-4 py-7 text-center sm:flex-row sm:justify-between sm:text-left">
+                  <div className="space-y-1">
+                    <p className="text-base font-semibold tracking-tight text-[var(--foreground)]">
+                      Ready to make it real?
+                    </p>
+                    <p className="text-pretty text-sm leading-relaxed text-[var(--foreground-muted)]">
+                      Book a consultation with Dr. Mehdi Adibrad, DDS — implants from $299/month with
+                      $500 down.*
+                    </p>
+                  </div>
+                  <Button asChild size="lg" className="w-full shrink-0 sm:w-auto">
+                    <a
+                      href="tel:+14379002200"
+                      onClick={() => trackEvent("call_click", { location: "preview_cta" })}
+                      aria-label="Call Dentin Family Dentistry at 437-900-2200"
+                    >
+                      <Phone className="size-4" aria-hidden strokeWidth={2.25} />
+                      Call 437-900-2200
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Compliance disclaimer */}
+          <p className="mx-auto max-w-xl text-pretty text-center text-xs leading-relaxed text-[var(--foreground-muted)]">
+            This AI smile preview is for visualization only and is not a diagnosis or treatment plan.
+            Please consult a licensed dentist for clinical recommendations.
           </p>
-          <p className="mt-4 text-[10px] font-medium uppercase tracking-[0.2em] text-emerald-600/70">
-            Dentin Family Dentistry
-          </p>
-        </footer>
+        </section>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

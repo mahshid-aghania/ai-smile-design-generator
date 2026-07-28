@@ -16,6 +16,14 @@ export const TREATMENT_LABELS: Record<TreatmentId, string> = {
   full_smile_makeover: "Full Smile Makeover",
 };
 
+export const TREATMENT_DESCRIPTIONS: Record<TreatmentId, string> = {
+  natural_smile_enhancement: "Subtle refinement — healthier, more even teeth",
+  dental_veneers_preview: "Reshaped, brighter front teeth",
+  missing_tooth_replacement: "Single or multiple dental implants",
+  teeth_whitening: "Brighter shade, natural enamel texture",
+  full_smile_makeover: "Full-arch or denture replacement result",
+};
+
 export const TREATMENT_PROMPTS: Record<TreatmentId, string> = {
   natural_smile_enhancement:
     "Enhance only the teeth and smile area. Keep the same person, same face, same lips, same skin tone, same lighting, and same background. Make the teeth look healthy, natural, symmetrical, and realistic. Do not change facial identity.",

@@ -5,16 +5,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] disabled:pointer-events-none disabled:opacity-45 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)] disabled:pointer-events-none disabled:opacity-45 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-[var(--primary)] text-emerald-950 shadow-[0_0_20px_-4px_rgba(16,185,129,0.45)] hover:bg-[var(--primary-hover)] hover:shadow-[0_0_28px_-4px_rgba(16,185,129,0.55)] active:bg-[var(--primary-active)]",
+          "bg-[var(--primary)] text-white shadow-[0_8px_20px_-8px_rgba(13,148,136,0.55)] hover:bg-[var(--primary-hover)] hover:shadow-[0_10px_26px_-8px_rgba(13,148,136,0.65)] active:bg-[var(--primary-active)]",
         secondary:
-          "border border-[var(--border-subtle)] bg-white/[0.04] text-[var(--foreground)] shadow-none hover:border-emerald-500/25 hover:bg-white/[0.07]",
+          "border border-[var(--border)] bg-[var(--surface)] text-[var(--primary-hover)] shadow-[0_1px_2px_rgba(15,43,49,0.05)] hover:border-[var(--primary)]/45 hover:bg-[var(--primary-soft)]",
+        outline:
+          "border border-[var(--border-subtle)] bg-[var(--surface)] text-[var(--foreground)] hover:border-[var(--primary)]/35 hover:bg-[var(--surface-muted)]",
         ghost:
-          "text-[var(--foreground-muted)] hover:bg-white/[0.06] hover:text-[var(--foreground)]",
+          "text-[var(--foreground-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--foreground)]",
       },
       size: {
         default: "h-11 px-5 py-2",

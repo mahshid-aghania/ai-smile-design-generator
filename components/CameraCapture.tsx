@@ -95,9 +95,9 @@ export function CameraCapture({ onCapture, onError, onCancel }: CameraCapturePro
   }, [onCapture, onError, ready, stopStream]);
 
   return (
-    <Card className="overflow-hidden border-emerald-500/12">
+    <Card className="mx-auto max-w-xl overflow-hidden">
       <CardContent className="space-y-4 p-4 sm:p-6">
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-zinc-950 ring-1 ring-inset ring-emerald-500/10">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[var(--border-subtle)] bg-[var(--foreground)]">
           <video
             ref={videoRef}
             playsInline
@@ -106,14 +106,14 @@ export function CameraCapture({ onCapture, onError, onCancel }: CameraCapturePro
             className="h-full w-full object-cover"
           />
           {!ready && (
-            <div className="absolute inset-0 flex items-center justify-center bg-zinc-950/90 text-sm text-[var(--foreground-muted)] backdrop-blur-[2px]">
+            <div className="absolute inset-0 flex items-center justify-center bg-[var(--surface-muted)] text-sm text-[var(--foreground-muted)]">
               Starting camera…
             </div>
           )}
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
           {onCancel && (
-            <Button type="button" variant="secondary" className="sm:mr-auto" onClick={onCancel}>
+            <Button type="button" variant="outline" className="sm:mr-auto" onClick={onCancel}>
               Cancel
             </Button>
           )}
